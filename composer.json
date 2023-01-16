@@ -6,6 +6,10 @@
         {
             "name": "haozing",
             "email": "570193025@qq.com"
+        },
+        {
+            "name": "Shira Kagurazaka",
+            "email": "github.com@ni-co.moe"
         }
     ],
     "autoload": {
@@ -14,7 +18,7 @@
         }
     },
     "require": {
-        "phpunit/phpunit": "^8.4",
+        "phpunit/phpunit": "^9.5",
         "mockery/mockery": "^1.2"
     }
 }
