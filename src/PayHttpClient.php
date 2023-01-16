@@ -1,5 +1,6 @@
 <?php
-namespace Haozi\Qzpay;
+namespace shirakun\Qzpay;
+
 /**
  * http、https通信类
  * ============================================================================
@@ -18,34 +19,36 @@ namespace Haozi\Qzpay;
  *
  */
 
-use Haozi\Qzpay\Exceptions\HttpException;
+useshirakun\Qzpay\Exceptions\HttpException;
 
-class PayHttpClient {
+class PayHttpClient
+{
     //请求内容
     //var $reqContent;
-    var $url;
-    var $data;
+    public $url;
+    public $data;
     //应答内容
-    var $resContent;
+    public $resContent;
 
     //错误信息
-    var $errInfo;
+    public $errInfo;
 
     //超时时间
-    var $timeOut;
+    public $timeOut;
 
     //http状态码
-    var $responseCode;
+    public $responseCode;
 
-    function __construct() {
+    public function __construct()
+    {
         $this->PayHttpClient();
     }
 
-
-    function PayHttpClient() {
+    public function PayHttpClient()
+    {
         //$this->reqContent = "";
-        $this->url="";
-        $this->data="";
+        $this->url        = "";
+        $this->data       = "";
         $this->resContent = "";
 
         $this->errInfo = "";
@@ -57,37 +60,42 @@ class PayHttpClient {
     }
 
     //设置请求内容
-    function setReqContent($url,$data) {
-        $this->url=$url;
-        $this->data=$data;
+    public function setReqContent($url, $data)
+    {
+        $this->url  = $url;
+        $this->data = $data;
     }
 
     //获取结果内容
-    function getResContent() {
+    public function getResContent()
+    {
         return $this->resContent;
     }
 
     //获取错误信息
-    function getErrInfo() {
+    public function getErrInfo()
+    {
         return $this->errInfo;
     }
 
     //设置超时时间,单位秒
-    function setTimeOut($timeOut) {
+    public function setTimeOut($timeOut)
+    {
         $this->timeOut = $timeOut;
     }
 
     //执行http调用
-    function call() {
+    public function call()
+    {
         //启动一个CURL会话
         $ch = curl_init();
 
         // 设置curl允许执行的最长秒数
         curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeOut);
-        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
-        curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         // 获取的信息以文件流的形式返回，而不是直接输出。
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
         //发送一个常规的POST请求。
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -96,32 +104,31 @@ class PayHttpClient {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $this->data);
 
         // 执行操作
-        $res = curl_exec($ch);
+        $res                = curl_exec($ch);
         $this->responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-        if ($res == NULL) {
+        if ($res == null) {
 
-            $this->errInfo = "call http err :" . curl_errno($ch) . " - " . curl_error($ch) ;
+            $this->errInfo = "call http err :" . curl_errno($ch) . " - " . curl_error($ch);
             curl_close($ch);
-            throw new HttpException($this->errInfo,$this->responseCode);
+            throw new HttpException($this->errInfo, $this->responseCode);
 
-        } else if($this->responseCode  != "200") {
-            $this->errInfo = "call http err httpcode=" . $this->responseCode  ;
+        } else if ($this->responseCode != "200") {
+            $this->errInfo = "call http err httpcode=" . $this->responseCode;
             curl_close($ch);
             //抛异常
-            throw new HttpException($this->errInfo,$this->responseCode);
+            throw new HttpException($this->errInfo, $this->responseCode);
         }
 
         curl_close($ch);
         $this->resContent = $res;
 
-
         return true;
     }
 
-    function getResponseCode() {
+    public function getResponseCode()
+    {
         return $this->responseCode;
     }
 
 }
-?>

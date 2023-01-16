@@ -1,5 +1,6 @@
 <?php
-namespace Haozi\Qzpay;
+namespace shirakun\Qzpay;
+
 /**
  * 后台应答类
  * ============================================================================
@@ -15,83 +16,91 @@ namespace Haozi\Qzpay;
  *
  */
 
-class ClientResponseHandler  {
+class ClientResponseHandler
+{
 
     /** MD5密钥 */
-    var $key;
+    public $key;
 
     /* 平台RSA公钥 */
-    var $public_rsa_key;
+    public $public_rsa_key;
 
-    var $signtype;
+    public $signtype;
 
     /** 应答的参数 */
-    var $parameters;
+    public $parameters;
 
     /** debug信息 */
-    var $debugInfo;
+    public $debugInfo;
 
     //原始内容
-    var $content;
+    public $content;
 
-    function __construct() {
+    public function __construct()
+    {
         $this->ClientResponseHandler();
     }
 
-    function ClientResponseHandler() {
-        $this->key = "";
+    public function ClientResponseHandler()
+    {
+        $this->key            = "";
         $this->public_rsa_key = "";
-        $this->signtype = "";
-        $this->parameters = array();
-        $this->debugInfo = "";
-        $this->content = "";
+        $this->signtype       = "";
+        $this->parameters     = array();
+        $this->debugInfo      = "";
+        $this->content        = "";
     }
 
     /**
      *获取密钥
      */
-    function getKey() {
+    public function getKey()
+    {
         return $this->key;
     }
 
     /**
      *设置密钥
      */
-    function setKey($key) {
+    public function setKey($key)
+    {
         $this->key = $key;
     }
 
     /*设置平台公钥*/
-    function setRSAKey($key) {
+    public function setRSAKey($key)
+    {
         $this->public_rsa_key = $key;
     }
 
-    function setSignType($type) {
+    public function setSignType($type)
+    {
         $this->signtype = $type;
     }
 
     //设置原始内容
-    function setContent($content) {
+    public function setContent($content)
+    {
         $this->content = $content;
 
         libxml_disable_entity_loader(true);
-        $xml = simplexml_load_string($this->content);
+        $xml    = simplexml_load_string($this->content);
         $encode = $this->getXmlEncode($this->content);
 
-        if($xml && $xml->children()) {
-            foreach ($xml->children() as $node){
+        if ($xml && $xml->children()) {
+            foreach ($xml->children() as $node) {
                 //有子节点
-                if($node->children()) {
-                    $k = $node->getName();
+                if ($node->children()) {
+                    $k       = $node->getName();
                     $nodeXml = $node->asXML();
-                    $v = substr($nodeXml, strlen($k)+2, strlen($nodeXml)-2*strlen($k)-5);
+                    $v       = substr($nodeXml, strlen($k) + 2, strlen($nodeXml) - 2 * strlen($k) - 5);
 
                 } else {
                     $k = $node->getName();
-                    $v = (string)$node;
+                    $v = (string) $node;
                 }
 
-                if($encode!="" && $encode != "UTF-8") {
+                if ($encode != "" && $encode != "UTF-8") {
                     $k = iconv("UTF-8", $encode, $k);
                     $v = iconv("UTF-8", $encode, $v);
                 }
@@ -102,21 +111,24 @@ class ClientResponseHandler  {
     }
 
     //获取原始内容
-    function getContent() {
+    public function getContent()
+    {
         return $this->content;
     }
 
     /**
      *获取参数值
      */
-    function getParameter($parameter) {
-        return isset($this->parameters[$parameter])?$this->parameters[$parameter] : '';
+    public function getParameter($parameter)
+    {
+        return isset($this->parameters[$parameter]) ? $this->parameters[$parameter] : '';
     }
 
     /**
      *设置参数值
      */
-    function setParameter($parameter, $parameterValue) {
+    public function setParameter($parameter, $parameterValue)
+    {
         $this->parameters[$parameter] = $parameterValue;
     }
 
@@ -124,7 +136,8 @@ class ClientResponseHandler  {
      *获取所有请求的参数
      *@return array
      */
-    function getAllParameters() {
+    public function getAllParameters()
+    {
         return $this->parameters;
     }
 
@@ -133,7 +146,8 @@ class ClientResponseHandler  {
      *true:是
      *false:否
      */
-    function isTenpaySign() {
+    public function isTenpaySign()
+    {
         $swiftpassSign = strtolower($this->getParameter("sign"));
         if ($this->getParameter('sign_type') == 'MD5') {
             return $this->getMD5Sign() == $swiftpassSign;
@@ -142,11 +156,12 @@ class ClientResponseHandler  {
         }
     }
 
-    function getMD5Sign() {
+    public function getMD5Sign()
+    {
         $signPars = "";
         ksort($this->parameters);
-        foreach($this->parameters as $k => $v) {
-            if("sign" != $k && "" != $v) {
+        foreach ($this->parameters as $k => $v) {
+            if ("sign" != $k && "" != $v) {
                 $signPars .= $k . "=" . $v . "&";
             }
         }
@@ -155,23 +170,24 @@ class ClientResponseHandler  {
         return strtolower(md5($signPars));
     }
 
-    function verifyRSASign() {
+    public function verifyRSASign()
+    {
         $signPars = "";
         ksort($this->parameters);
-        foreach($this->parameters as $k => $v) {
-            if("sign" != $k && "" != $v) {
+        foreach ($this->parameters as $k => $v) {
+            if ("sign" != $k && "" != $v) {
                 $signPars .= $k . "=" . $v . "&";
             }
         }
 
         $signPars = substr($signPars, 0, strlen($signPars) - 1);
-        $res = openssl_get_publickey($this->public_rsa_key);
+        $res      = openssl_get_publickey($this->public_rsa_key);
         if ($this->getParameter('sign_type') == 'RSA_1_1') {
-            $result = (bool)openssl_verify($signPars, base64_decode($this->getParameter("sign")), $res);
+            $result = (bool) openssl_verify($signPars, base64_decode($this->getParameter("sign")), $res);
             openssl_free_key($res);
             return $result;
-        } else if($this->getParameter('sign_type') == 'RSA_1_256') {
-            $result = (bool)openssl_verify($signPars, base64_decode($this->getParameter("sign")), $res, OPENSSL_ALGO_SHA256);
+        } else if ($this->getParameter('sign_type') == 'RSA_1_256') {
+            $result = (bool) openssl_verify($signPars, base64_decode($this->getParameter("sign")), $res, OPENSSL_ALGO_SHA256);
             openssl_free_key($res);
             return $result;
         }
@@ -180,15 +196,17 @@ class ClientResponseHandler  {
     /**
      *获取debug信息
      */
-    function getDebugInfo() {
+    public function getDebugInfo()
+    {
         return $this->debugInfo;
     }
 
     //获取xml编码
-    function getXmlEncode($xml) {
-        $ret = preg_match ("/<?xml[^>]* encoding=\"(.*)\"[^>]* ?>/i", $xml, $arr);
-        if($ret) {
-            return strtoupper ( $arr[1] );
+    public function getXmlEncode($xml)
+    {
+        $ret = preg_match("/<?xml[^>]* encoding=\"(.*)\"[^>]* ?>/i", $xml, $arr);
+        if ($ret) {
+            return strtoupper($arr[1]);
         } else {
             return "";
         }
@@ -197,7 +215,8 @@ class ClientResponseHandler  {
     /**
      *设置debug信息
      */
-    function _setDebugInfo($debugInfo) {
+    public function _setDebugInfo($debugInfo)
+    {
         $this->debugInfo = $debugInfo;
     }
 
@@ -206,12 +225,13 @@ class ClientResponseHandler  {
      * @param signParameterArray 签名的参数数组
      * @return boolean
      */
-    function _isTenpaySign($signParameterArray) {
+    public function _isTenpaySign($signParameterArray)
+    {
 
         $signPars = "";
-        foreach($signParameterArray as $k) {
+        foreach ($signParameterArray as $k) {
             $v = $this->getParameter($k);
-            if("sign" != $k && "" != $v) {
+            if ("sign" != $k && "" != $v) {
                 $signPars .= $k . "=" . $v . "&";
             }
         }
@@ -227,10 +247,6 @@ class ClientResponseHandler  {
 
         return $sign == $tenpaySign;
 
-
     }
 
 }
-
-
-?>

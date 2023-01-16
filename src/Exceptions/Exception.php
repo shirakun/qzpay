@@ -1,6 +1,6 @@
 <?php
 
-namespace Haozi\Qzpay\Exceptions;
+namespace shirakun\Qzpay\Exceptions;
 
 class Exception extends \Exception
 {
