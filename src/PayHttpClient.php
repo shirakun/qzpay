@@ -19,7 +19,7 @@ namespace shirakun\Qzpay;
  *
  */
 
-useshirakun\Qzpay\Exceptions\HttpException;
+use shirakun\Qzpay\Exceptions\HttpException;
 
 class PayHttpClient
 {

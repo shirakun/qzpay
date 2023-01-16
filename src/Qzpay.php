@@ -1,9 +1,9 @@
 <?php
 namespace shirakun\Qzpay;
 
-useshirakun\Qzpay\Exceptions\BaseException;
-useshirakun\Qzpay\Exceptions\HttpException;
-useshirakun\Qzpay\Exceptions\InvalidArgumentException;
+use shirakun\Qzpay\Exceptions\BaseException;
+use shirakun\Qzpay\Exceptions\HttpException;
+use shirakun\Qzpay\Exceptions\InvalidArgumentException;
 
 class Qzpay
 {

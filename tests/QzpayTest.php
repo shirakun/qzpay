@@ -1,8 +1,8 @@
 <?php
 namespace shirakun\Qzpay\Tests;
 
-useshirakun\Qzpay\Qzpay;
 use PHPUnit\Framework\TestCase;
+use shirakun\Qzpay\Qzpay;
 
 class QzpayTest extends TestCase
 {
