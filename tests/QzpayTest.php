@@ -16,8 +16,8 @@ class QzpayTest extends TestCase
             'version' => '2.0',
             'sign_type'  => 'MD5',
             'notify_url' => '', //通知地址，必填项，接收平台通知的URL，
-            'sub_appid'  => '', //对应公众号appid，必填
-            'sub_openid' => '', //对应公众号获取到的用户openid
+            // 'sub_appid'  => '', //对应公众号appid，必填
+            // 'sub_openid' => '', //对应公众号获取到的用户openid
         );
 
         $order = array(

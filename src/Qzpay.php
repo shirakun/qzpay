@@ -51,8 +51,8 @@ class Qzpay
         $this->reqHandler->setParameter('version', $this->config['version']);
         $this->reqHandler->setParameter('sign_type', $this->config['sign_type']);
         $this->reqHandler->setParameter('notify_url', $this->config['notify_url']); //通知地址，必填项，接收平台通知的URL，保证外网能正常访问到
-        $this->reqHandler->setParameter('sub_appid', $this->config['sub_appid']); //对应公众号appid，必填
-        $this->reqHandler->setParameter('sub_openid', $this->config['sub_openid']); //对应公众号获取到的用户openid，必填(使用微信官方网页授权接口获取地址：            https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842&token=&lang=zh_CN )
+        // $this->reqHandler->setParameter('sub_appid', $this->config['sub_appid']); //对应公众号appid，必填
+        // $this->reqHandler->setParameter('sub_openid', $this->config['sub_openid']); //对应公众号获取到的用户openid，必填(使用微信官方网页授权接口获取地址：            https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842&token=&lang=zh_CN )
         $this->reqHandler->setParameter('is_raw', '1');
         $this->reqHandler->setParameter('nonce_str', mt_rand()); //随机字符串，必填项，不长于 32 位
         $this->reqHandler->createSign(); //创建签名
