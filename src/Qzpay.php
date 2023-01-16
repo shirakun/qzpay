@@ -46,7 +46,7 @@ class Qzpay
     public function submitOrderInfo($order)
     {
         $this->reqHandler->setReqParams($order);
-        $this->reqHandler->setParameter('service', 'pay.weixin.jspay'); //接口类型：pay.weixin.jspay
+        $this->reqHandler->setParameter('service', 'unified.trade.native');
         $this->reqHandler->setParameter('mch_id', $this->config['mch_id']); //必填项，商户号，由平台分配
         $this->reqHandler->setParameter('version', $this->config['version']);
         $this->reqHandler->setParameter('sign_type', $this->config['sign_type']);
